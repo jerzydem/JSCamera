@@ -1,6 +1,7 @@
 JSCAMERA
 ========
-Simple moving JavaScript camera prepare as project at Warsaw University of Technology in 2011
+Simple moving JavaScript camera prepare as project at Warsaw University of Technology in 2011.
+Use same solutions from Sylvester Vector and Matrix JavaScript library by James Coglan (http://sylvester.jcoglan.com/).
 
 LICENSE
 =======
