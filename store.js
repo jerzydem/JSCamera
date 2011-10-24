@@ -391,15 +391,25 @@ var store = (function () {
     // 3D O B J E C T  D E F I N I T I O N
     
     var points = [
-        { num: 1, cor: {x: -1, y: -1, z:  1, p: 1 }, }, //under square
-        { num: 2, cor: {x:  1, y: -1, z:  1, p: 1 }, },
-        { num: 3, cor: {x:  1, y: -1, z: -1, p: 1 }, },
-        { num: 4, cor: {x: -1, y: -1, z: -1, p: 1 }, },
-        { num: 5, cor: {x: -1, y:  1, z:  1, p: 1 }, }, //top square
-        { num: 6, cor: {x:  1, y:  1, z:  1, p: 1 }, },
-        { num: 7, cor: {x:  1, y:  1, z: -1, p: 1 }, },
-        { num: 8, cor: {x: -1, y:  1, z: -1, p: 1 }, },
+        { num: 1, cor: {x: -100, y: -100, z:  100, p: 1 }, }, //under square
+        { num: 2, cor: {x:  100, y: -100, z:  100, p: 1 }, },
+        { num: 3, cor: {x:  100, y: -100, z: -100, p: 1 }, },
+        { num: 4, cor: {x: -100, y: -100, z: -100, p: 1 }, },
+        { num: 5, cor: {x: -100, y:  100, z:  100, p: 1 }, }, //top square
+        { num: 6, cor: {x:  100, y:  100, z:  100, p: 1 }, },
+        { num: 7, cor: {x:  100, y:  100, z: -100, p: 1 }, },
+        { num: 8, cor: {x: -100, y:  100, z: -100, p: 1 }, },
     ];        
+
+
+//    var points = [
+//        { num: 1, cor: {x: 100, y: 100, z:  100, p: 1 }, }, //under square
+//        { num: 2, cor: {x:  200, y: 200, z:  100, p: 1 }, },
+//        { num: 3, cor: {x:  0, y: 50, z: -100, p: 1 }, },
+//    ];        
+
+
+
     
     var triangles = [
         { a: 1, b: 2, c: 3}, //under square
@@ -429,15 +439,19 @@ var store = (function () {
         if ( typeof num !== 'number'){
             return NaN;
         }else{
-            return points.filter( function(){
-            
-            
-            }
-            ) }
-        
-        }
-        
+            return points.filter( function( element, index, aray ){
+                return (element.num === num);
+            });
+        }    
     }
+    that.get_transform_point = function ( num ){
+        var point = jQuery.extend( true, {},  that.get_point( num ) );
+        point[0].cor.x = point[0].cor.x + 300;
+        point[0].cor.y = - point[0].cor.y + 300;
+        return point;
+    
+    }
+    
     
     // PUBLIC TESTS
     that.test_point_norm = function( point ){
