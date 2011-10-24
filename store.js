@@ -162,8 +162,8 @@ var store = (function () {
             var rows_num = this.value.length;
             var k = rows_num;
             var i, j;
-            
-            var M = this.augement( Matrix.Identity( rows_num ));
+            var ident = Matrix.identity( rows_num )
+            var M = this.augment( ident.value );
             M.right_tringular();
             var np;
             var kp = M.value[0].length;
@@ -172,7 +172,7 @@ var store = (function () {
             var new_element;
             // Cycle through rows from last to first
             do { 
-                i = ni -1;
+                i = rows_num - 1;
                 // First, normalise diagonal elements to 1
                 tmp = [];
                 np = kp;
@@ -180,7 +180,7 @@ var store = (function () {
                 divisor = M.value[i][i];
                 do { 
                     p = kp - np;
-                    new_element = M.value[i][p] / div;
+                    new_element = M.value[i][p] / divisor;
                     tmp.push( new_element );
                     // Shuffle of the current row of the right hand side into the results
                     // array as it will not be modified by later runs through this loop                    
@@ -200,8 +200,10 @@ var store = (function () {
                     } while ( --np );
                     M.value[j] = tmp;
                 }
-            } while ( rows_num-- );
-            return Matrix.create.add_new_matrix( inverse_elements );       
+            } while ( --rows_num );
+            var res = Matrix.create();
+            res.add_new_matrix( inverse_elements );
+            return res;       
         },
         
             // END MATRIX MATEMATICAL OPERATIONS
@@ -209,10 +211,10 @@ var store = (function () {
 
         //attaching the given argument to the right side of the matrix
         augment: function (matrix_table){
-            var M = matrix.value || matrix_table;
+            var M = Matrix.value || matrix_table;
             var T = this.copy();
-            var cols_num = matrix.value[0].length;
-            var rows_num = matrix.value.length;
+            var cols_num = T.value[0].length;
+            var rows_num = T.value.length;
             var i_rows_num = rows_num;
             var i, nj, j;
             var M_cols_num = M[0].length;
@@ -423,7 +425,19 @@ var store = (function () {
         return figure();
     }
     
-    
+    that.get_point = function( num ) {
+        if ( typeof num !== 'number'){
+            return NaN;
+        }else{
+            return points.filter( function(){
+            
+            
+            }
+            ) }
+        
+        }
+        
+    }
     
     // PUBLIC TESTS
     that.test_point_norm = function( point ){
@@ -514,7 +528,8 @@ var store = (function () {
     that.test_inverse = function () {
         var M = Matrix.create();
         M.add_new_matrix( example3_matrix4x4 );
-        return M.matrix_inverse();
+        var newM = M.copy();
+        return newM.matrix_inverse();
     }
     
     //E N D PUBLIC TESTS
