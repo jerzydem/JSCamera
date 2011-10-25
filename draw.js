@@ -6,9 +6,10 @@ var draw = (function() {
 // PUBLIC INTERFACE
 
     that.start_draw = function (){
-        var figure = store.get_figure();
-        figure.triangles.forEach( function ( triangle ){
-            draw_triangle( triangle );
+        var triangles = store.get_triangles();
+        var tr_points = store.tranform_points(0.3);
+        triangles.forEach( function ( triangle ){
+            draw_triangle( triangle, tr_points );
         });             
     }
 
@@ -27,24 +28,30 @@ var draw = (function() {
 
 
 // PRIVATE INTERFACE
-    function draw_triangle( trian ) {
+
+
+  
+
+    function draw_triangle( trian, tranform_points ) {
         var picture = document.getElementById('picture');
-        var pointA = store.get_transform_point( trian.a )[0];
-        var pointB = store.get_transform_point( trian.b )[0];
-        var pointC = store.get_transform_point( trian.c )[0];
+        var transform_points
+        var pointA = store.get_point_from_points( tranform_points, trian.a )[0];
+        var pointB = store.get_point_from_points( tranform_points, trian.b )[0];
+        var pointC = store.get_point_from_points( tranform_points, trian.c )[0];
         var Ax = pointA.cor.x;
         var Ay = pointA.cor.y;
         var Bx = pointB.cor.x;
         var By = pointB.cor.y;
         var Cx = pointC.cor.x;
         var Cy = pointC.cor.y;
+ 
         
         
         
         
         if (picture.getContext){
             var ctx = picture.getContext('2d');
-            ctx.strokeStyle = "rgb(255,0,0)";
+            ctx.strokeStyle = "rgb( "+ trian.colR +", " + trian.colG + " , " + trian.colB +" )";
             
             ctx.beginPath();
             ctx.moveTo( Ax, Ay );

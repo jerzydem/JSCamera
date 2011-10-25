@@ -201,8 +201,8 @@ var store = (function () {
                     M.value[j] = tmp;
                 }
             } while ( --rows_num );
-            var res = Matrix.create();
-            res.add_new_matrix( inverse_elements );
+            var res = Matrix.create( inverse_elements );
+ 
             return res;       
         },
         
@@ -283,7 +283,7 @@ var store = (function () {
         var tmp = [];
         var k = n;
         var i, nj, j;
-        var M = Matrix.create();
+
         do {
             i = k - n;
             tmp[i] = [];
@@ -293,15 +293,32 @@ var store = (function () {
                 tmp[i][j] = ( i === j ) ? 1 : 0;
             } while ( --nj );
         } while ( --n );
-        M.add_new_matrix( tmp );
+        var M = Matrix.create( tmp );        
         return M;
      };
     
      //create new matrix
-     Matrix.create = function(){
+     Matrix.create = function( matrix_table ){
+        
         var M = new Matrix();
+        M.add_new_matrix( matrix_table );
         return M;
      };
+
+
+
+    // Crete Perspective Projection Matrix
+
+     Matrix.perspective_matrix = function( z ){
+        var tmp = [];
+        
+        tmp[0] = [ 1, 0, 0, 0 ];
+        tmp[1] = [ 0, 1, 0, 0 ];
+        tmp[2] = [ 0, 0, 1 / ( 1 - z ), -z / ( 1 - z ) ];
+        tmp[3] = [ 0, 0, 1, 0];
+        var M = Matrix.create( tmp );
+        return M; 
+     }
 
     // E N D    M A T R I X   G E N E R A T O R
 
@@ -391,14 +408,14 @@ var store = (function () {
     // 3D O B J E C T  D E F I N I T I O N
     
     var points = [
-        { num: 1, cor: {x: -100, y: -100, z:  100, p: 1 }, }, //under square
-        { num: 2, cor: {x:  100, y: -100, z:  100, p: 1 }, },
-        { num: 3, cor: {x:  100, y: -100, z: -100, p: 1 }, },
-        { num: 4, cor: {x: -100, y: -100, z: -100, p: 1 }, },
-        { num: 5, cor: {x: -100, y:  100, z:  100, p: 1 }, }, //top square
-        { num: 6, cor: {x:  100, y:  100, z:  100, p: 1 }, },
-        { num: 7, cor: {x:  100, y:  100, z: -100, p: 1 }, },
-        { num: 8, cor: {x: -100, y:  100, z: -100, p: 1 }, },
+        { num: 1, cor: {x: -0.1, y: -0.1, z:  0.9, p: 1 }, }, //under square
+        { num: 2, cor: {x:  0.1, y: -0.1, z:  0.9, p: 1 }, },
+        { num: 3, cor: {x:  0.1, y: -0.1, z:  0.7, p: 1 }, },
+        { num: 4, cor: {x: -0.1, y: -0.1, z:  0.7, p: 1 }, },
+        { num: 5, cor: {x: -0.1, y:  0.1, z:  0.9, p: 1 }, }, //top square
+        { num: 6, cor: {x:  0.1, y:  0.1, z:  0.9, p: 1 }, },
+        { num: 7, cor: {x:  0.1, y:  0.1, z:  0.7, p: 1 }, },
+        { num: 8, cor: {x: -0.1, y:  0.1, z:  0.7, p: 1 }, },
     ];        
 
 
@@ -412,19 +429,19 @@ var store = (function () {
 
     
     var triangles = [
-        { a: 1, b: 2, c: 3}, //under square
-        { a: 1, b: 3, c: 4},
-        { a: 5, b: 6, c: 7}, //top square
-        { a: 5, b: 7, c: 8},
-        { a: 5, b: 1, c: 2}, //side walls
-        { a: 6, b: 2, c: 3},
-        { a: 7, b: 3, c: 4},
-        { a: 8, b: 4, c: 1},          
+        { a: 1, b: 2, c: 3, colR: 255, colG: 0, colB: 0 }, //under square 
+        { a: 1, b: 3, c: 4, colR: 255, colG: 0, colB: 0 },
+        { a: 5, b: 6, c: 7, colR: 0, colG: 255, colB: 0 }, //top square
+        { a: 5, b: 7, c: 8, colR: 0, colG: 255, colB: 0 },
+        { a: 5, b: 1, c: 2, colR: 0, colG: 0, colB: 255 }, //side walls
+        { a: 6, b: 2, c: 3, colR: 0, colG: 0, colB: 255 },
+        { a: 7, b: 3, c: 4, colR: 0, colG: 0, colB: 255 },
+        { a: 8, b: 4, c: 1, colR: 0, colG: 0, colB: 255 },          
     ];
 
     // E N D   3D O B J E C T  D E F I N I T I O N
     
-    
+
     
     
     
@@ -435,6 +452,10 @@ var store = (function () {
         return figure();
     }
     
+    that.get_triangles = function(){
+        return triangles;
+    }    
+    
     that.get_point = function( num ) {
         if ( typeof num !== 'number'){
             return NaN;
@@ -444,7 +465,18 @@ var store = (function () {
             });
         }    
     }
-    that.get_transform_point = function ( num ){
+    
+     that.get_point_from_points = function( tr_points, num ) {
+        if ( typeof num !== 'number'){
+            return NaN;
+        }else{
+            return tr_points.filter( function( element, index, aray ){
+                return (element.num === num);
+            });
+        }    
+    }
+    
+    that.get_transform_point = function ( num , z ){
         var point = jQuery.extend( true, {},  that.get_point( num ) );
         point[0].cor.x = point[0].cor.x + 300;
         point[0].cor.y = - point[0].cor.y + 300;
@@ -452,37 +484,54 @@ var store = (function () {
     
     }
     
+    that.tranform_points = function ( z ) {
+        
+        var tmp_points = jQuery.extend( true, [],  points );
+        
+        tmp_points.forEach( function ( point ) {
+            transform_point( point, z );
+        });
+        all_points_normalization( tmp_points );
+        tmp_points = all_points_transform( tmp_points );
+        
+        return tmp_points;
+    
+    }
+//         points_table.forEach(function ( point ) {
+//            point_normalization(point.cor);
+//        })                
+//        return points_table;   
     
     // PUBLIC TESTS
-    that.test_point_norm = function( point ){
+    that.test_point_norm = function( point ) {
            point_normalization(point);
            return point; 
     }
 
-    that.all_points_normalization = function ( points_table ){
+    that.all_points_normalization = function( points_table ) {
         return all_points_normalization( get_points());
         
     }
     
-    that.get_example_matrix = function (){
+    that.get_example_matrix = function() {
         return example_matrix_4x4;
     }
     
-    that.get_matrix = function (){
+    that.get_matrix = function() {
         return matrix;
     }
     
-    that.test_matrix = function(  ){
+    that.test_matrix = function() {
         matrix.add_new_matrix( example_matrix_4x4);
         return matrix;
     }
 
-    that.test_empty_matrix = function(  ){
+    that.test_empty_matrix = function() {
         that.test_matrix();
         return matrix.is_desame_size(example2_matrix_4x4);
     }
 
-    that.test_add_matrix = function(  ){
+    that.test_add_matrix = function() {
         matrix.add_new_matrix( example_vector1 );
         matrix.add_matrix( example_vector2 );
         return that.get_matrix();
@@ -534,17 +583,34 @@ var store = (function () {
         return t;
     }
     
-    that.test_identity = function ( n ){
+    that.test_identity = function( n ){
         
         return Matrix.identity(5);
     }
     
-    that.test_inverse = function () {
-        var M = Matrix.create();
-        M.add_new_matrix( example3_matrix4x4 );
+    that.test_inverse = function() {
+        var M = Matrix.create( example3_matrix4x4 );
+
         var newM = M.copy();
         return newM.matrix_inverse();
     }
+    
+    that.test_perspective_matrix = function() {
+    
+        var M = Matrix.perspective_matrix( 3 );
+        return M
+    }
+    
+    that.test_transform_point = function() {
+        var my_point = points[1];
+        return transform_point( my_point, 50 );
+    
+    }
+    
+    that.test_tranform_points = function(){
+        return that.tranform_points( 0.3 );
+    }
+    
     
     //E N D PUBLIC TESTS
 
@@ -558,7 +624,7 @@ var store = (function () {
   
   
 
-// PRIVATE INTERFACE
+// PRIVATE INTERFACEtranform_points
     function get_points() {
         return points;
     }
@@ -584,6 +650,45 @@ var store = (function () {
         })                
         return points_table;
     }  
+    
+    function all_points_transform( points_table ){
+        var transform_points = jQuery.extend( true, [],  points_table );
+        transform_points.forEach(function ( point ) {
+            point_transform(point);
+        })                
+        return transform_points;           
+    }
+    
+     function point_transform( point ) {
+        point.cor.x = (point.cor.x * 1000 ) + 300;
+        point.cor.y = - ( point.cor.y * 1000 ) + 300;
+        return point;    
+    }
+    
+    function point_vector( point ){
+        var tmp = [];
+        tmp[0] = [ point.cor.x ];
+        tmp[1] = [ point.cor.y ];
+        tmp[2] = [ point.cor.z ];
+        tmp[3] = [ 1 ];
+        return tmp;
+    }
+    
+    function vector_to_point( table , point ){
+        point.cor.x = table[0];
+        point.cor.y = table[1];
+        point.cor.z = table[2];
+        point.cor.p = table[3];
+        return point;
+    }    
+    
+    function transform_point( point, z ){
+        var  pnt_vector = point_vector( point );
+        var Mpp = Matrix.perspective_matrix( z );
+        Mpp.matrix_multiplication( pnt_vector ); 
+        point = vector_to_point( Mpp.value, point ); 
+        return point;        
+    }
     
 // E N D  PRIVATE INTERFACE
        
