@@ -5,13 +5,113 @@
 </head>
 <body>
 <h5> 
-test
+JSCamera
 </h5>
-<canvas id="picture" width="600" height="600" style="borde-width: 1px; border-style: solid;">
+<div id="cam-zoom-in" style="display: inline;" >
+<img src="img/full-screen-exit-alt-2.png" id="pic-zoom-in" alt="zoom in" />
+</div>
+<div id="cam-zoom-out" style="display: inline;" >
+<img src="img/full-screen-alt-2.png" id="pic-zoom-out" alt="zoom out" />
+</div>
+<div id="cam-move-left" style="display: inline;" >
+<img src="img/arrow-1-left.png" id="pic-move-left" alt="move left" />
+</div>
+<div id="cam-move-right" style="display: inline;" >
+<img src="img/arrow-1-right_0.png" id="pic-move-right" alt="move right" />
+</div>
+<div id="cam-move-up" style="display: inline;" >
+<img src="img/arrow-1-up_0.png" id="pic-move-up" alt="move up" />
+</div>
+<div id="cam-move-down" style="display: inline;" >
+<img src="img/arrow-1-down_0.png" id="pic-move-down" alt="move down" />
+</div>
+
+<div id="cam-move-closer" style="display: inline;" >
+<img src="img/zoom-in.png" id="pic-move-closer" alt="move closer" />
+</div>
+<div id="cam-move-further" style="display: inline;" >
+<img src="img/zoom-out.png" id="pic-move-further" alt="move further" />
+</div>
+<br>
+<div id="cam-rotateX-left" style="display: inline;" >
+|| x up: <img src="img/3D-X-Axis-Rotation.png" id="pic-rotX-left" alt="rotX left" />
+</div>
+<div id="cam-rotateX-right" style="display: inline;" >
+|| x down: <img src="img/3D-X-Axis-Rotation.png" id="pic-rotX-right" alt="rotX right" />
+</div>
+<div id="cam-rotateY-left" style="display: inline;" >
+|| y left: <img src="img/3D-Y-Axis-Rotation.png" id="pic-rotY-left" alt="rotY left" />
+</div>
+<div id="cam-rotateY-right" style="display: inline;" >
+|| y right: <img src="img/3D-Y-Axis-Rotation.png" id="pic-rotY-right" alt="rotY right" />
+</div>
+<div id="cam-rotateZ-left" style="display: inline;" >
+|| z clockwise: <img src="img/3D-Z-Axis-Rotation.png" id="pic-rotZ-left" alt="rotZ left" />
+</div>
+<div id="cam-rotateZ-right" style="display: inline;" >
+|| z no clockwise: <img src="img/3D-Z-Axis-Rotation.png" id="pic-rotZ-right" alt="rotZ right" />
+</div>
+
+
+
+
+
+<canvas id="picture" width="600" height="600" style="borde-width: 1px; border-style: solid; display: block;">
 This text is displayed if your browser does not support HTML5 Canvas.
 </canvas>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<p>
+<ul>
+<li>
+z - zoom in
+</li>
+<li>
+a - zoom out
+</li>
+<li>
+j- move left  
+</li>
+<li>
+l- move right 
+</li>
+<li>
+i - move up 
+</li>
+<li>
+k - move down 
+</li>
+<li>
+n - closer
+</li>
+<li>
+m - further
+</li>
+<li>
+s - x rotation up
+</li>
+<li>
+x - x rotation down 
+</li>
+<li>
+d - y rotation left
+</li>
+<li>
+c - y rotation right 
+</li>
+<li>
+f - z clockwise rotation 
+</li>
+<li>
+v - z no clockwise rotation  
+</li>
+
+
+</ul>
+</p>
+
+
+
+<script src="jquery.min.js"></script>
 <script src="store.js" >
 </script>
 <script src="draw.js" >

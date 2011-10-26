@@ -314,12 +314,57 @@ var store = (function () {
         
         tmp[0] = [ 1, 0, 0, 0 ];
         tmp[1] = [ 0, 1, 0, 0 ];
-        tmp[2] = [ 0, 0, 1 / ( 1 - z ), -z / ( 1 - z ) ];
-        tmp[3] = [ 0, 0, 1, 0];
+        tmp[2] = [ 0, 0, 1, 0 ];
+        tmp[3] = [ 0, 0, 1/z , 0];
         var M = Matrix.create( tmp );
         return M; 
-     }
+     };
 
+    Matrix.move_matrix = function( Tx, Ty, Tz ) {
+        var tmp = [];
+        
+        tmp[0] = [ 1, 0, 0, Tx ];
+        tmp[1] = [ 0, 1, 0, Ty ];
+        tmp[2] = [ 0, 0, 1, Tz ];
+        tmp[3] = [ 0, 0, 0 , 1];
+        var M = Matrix.create( tmp );
+        return M;     
+    };    
+    
+    Matrix.rotation_ox = function( angle ){
+       var tmp = [];
+        
+        tmp[0] = [ 1, 0                    , 0                    , 0 ];
+        tmp[1] = [ 0, Math.cos( angle ) , -Math.sin( angle ), 0 ];
+        tmp[2] = [ 0, Math.sin( angle ) , Math.cos( angle ) , 0 ];
+        tmp[3] = [ 0, 0                    , 0                 , 1 ];
+        var M = Matrix.create( tmp );
+        return M;     
+    }
+
+    Matrix.rotation_oy = function( angle ){
+       var tmp = [];
+        
+        tmp[0] = [ Math.cos( angle ), 0, Math.sin( angle ), 0 ];
+        tmp[1] = [ 0                , 1, 0                  , 0 ];
+        tmp[2] = [-Math.sin( angle ), 0, Math.cos( angle ), 0 ];
+        tmp[3] = [ 0                , 0, 0                   , 1 ];
+        var M = Matrix.create( tmp );
+        return M;     
+    }
+
+    Matrix.rotation_oz = function( angle ){
+       var tmp = [];
+        
+        tmp[0] = [ Math.cos( angle ), -Math.sin( angle ), 0, 0 ];
+        tmp[1] = [ Math.sin( angle ), Math.cos( angle ) , 0, 0 ];
+        tmp[2] = [ 0                 , 0                    , 1, 0 ];
+        tmp[3] = [ 0                , 0                    , 0, 1 ];
+        var M = Matrix.create( tmp );
+        return M;     
+    }
+
+    
     // E N D    M A T R I X   G E N E R A T O R
 
 
@@ -408,14 +453,24 @@ var store = (function () {
     // 3D O B J E C T  D E F I N I T I O N
     
     var points = [
-        { num: 1, cor: {x: -0.1, y: -0.1, z:  0.9, p: 1 }, }, //under square
-        { num: 2, cor: {x:  0.1, y: -0.1, z:  0.9, p: 1 }, },
-        { num: 3, cor: {x:  0.1, y: -0.1, z:  0.7, p: 1 }, },
-        { num: 4, cor: {x: -0.1, y: -0.1, z:  0.7, p: 1 }, },
-        { num: 5, cor: {x: -0.1, y:  0.1, z:  0.9, p: 1 }, }, //top square
-        { num: 6, cor: {x:  0.1, y:  0.1, z:  0.9, p: 1 }, },
-        { num: 7, cor: {x:  0.1, y:  0.1, z:  0.7, p: 1 }, },
-        { num: 8, cor: {x: -0.1, y:  0.1, z:  0.7, p: 1 }, },
+        { num: 1, cor: {x: -0.1, y: -0.1, z:  5.9, p: 1 }, }, //under square
+        { num: 2, cor: {x:  0.1, y: -0.1, z:  5.9, p: 1 }, },
+        { num: 3, cor: {x:  0.1, y: -0.1, z:  5.7, p: 1 }, },
+        { num: 4, cor: {x: -0.1, y: -0.1, z:  5.7, p: 1 }, },
+        { num: 5, cor: {x: -0.1, y:  0.1, z:  5.9, p: 1 }, }, //top square
+        { num: 6, cor: {x:  0.1, y:  0.1, z:  5.9, p: 1 }, },
+        { num: 7, cor: {x:  0.1, y:  0.1, z:  5.7, p: 1 }, },
+        { num: 8, cor: {x: -0.1, y:  0.1, z:  5.7, p: 1 }, },
+        { num: 9, cor: {x: 0,    y:  0.2, z:  5.8, p: 1 }, },
+        
+        { num: 10,cor: {x: 0.3,  y: -0.1, z:  5.7, p: 1 }, }, //2 figure top square
+        { num: 11,cor: {x: 0.3,  y: -0.1, z:  5.5, p: 1 }, },        
+        { num: 12,cor: {x: 0.1,  y: -0.1, z:  5.5, p: 1 }, },
+        { num: 13,cor: {x: 0.1,  y: -0.3, z:  5.7, p: 1 }, }, //2 figure under square
+        { num: 14,cor: {x: 0.3,  y: -0.3, z:  5.7, p: 1 }, }, 
+        { num: 15,cor: {x: 0.3,  y: -0.3, z:  5.5, p: 1 }, },        
+        { num: 16,cor: {x: 0.1,  y: -0.3, z:  5.5, p: 1 }, },
+
     ];        
 
 
@@ -429,14 +484,30 @@ var store = (function () {
 
     
     var triangles = [
-        { a: 1, b: 2, c: 3, colR: 255, colG: 0, colB: 0 }, //under square 
-        { a: 1, b: 3, c: 4, colR: 255, colG: 0, colB: 0 },
-        { a: 5, b: 6, c: 7, colR: 0, colG: 255, colB: 0 }, //top square
-        { a: 5, b: 7, c: 8, colR: 0, colG: 255, colB: 0 },
         { a: 5, b: 1, c: 2, colR: 0, colG: 0, colB: 255 }, //side walls
         { a: 6, b: 2, c: 3, colR: 0, colG: 0, colB: 255 },
         { a: 7, b: 3, c: 4, colR: 0, colG: 0, colB: 255 },
         { a: 8, b: 4, c: 1, colR: 0, colG: 0, colB: 255 },          
+        { a: 1, b: 2, c: 3, colR: 0, colG: 255, colB: 0 }, //under square 
+        { a: 1, b: 3, c: 4, colR: 0, colG: 255, colB: 0 },
+        { a: 5, b: 6, c: 7, colR: 255, colG: 0, colB: 0 }, //top square
+        { a: 5, b: 7, c: 8, colR: 255, colG: 0, colB: 0 },
+        { a: 5, b: 6, c: 9, colR: 255, colG: 0, colB: 0 }, //top point
+        { a: 6, b: 7, c: 9, colR: 255, colG: 0, colB: 0 }, 
+        { a: 7, b: 8, c: 9, colR: 255, colG: 0, colB: 0 }, 
+        { a: 8, b: 5, c: 9, colR: 255, colG: 0, colB: 0 },
+        
+        { a: 13, b: 14, c: 3 , colR: 0, colG: 255, colB: 0 }, //figure 2 side walls
+        { a: 14, b: 15, c: 10, colR: 0, colG: 255, colB: 0 },
+        { a: 16, b: 15, c: 11, colR: 0, colG: 255, colB: 0 },
+        { a: 13, b: 16, c: 12, colR: 0, colG: 255, colB: 0 },          
+        { a: 10, b: 12, c: 11, colR: 0, colG: 255, colB: 0 }, //figure 2 - top square
+        { a: 3 , b: 10, c: 12, colR: 0, colG: 255, colB: 0 },
+        { a: 13, b: 14, c: 16, colR: 0, colG: 255, colB: 0 }, //figure 2 - under square
+        { a: 14, b: 16, c: 15, colR: 0, colG: 255, colB: 0 },
+
+
+ 
     ];
 
     // E N D   3D O B J E C T  D E F I N I T I O N
@@ -463,8 +534,9 @@ var store = (function () {
             return points.filter( function( element, index, aray ){
                 return (element.num === num);
             });
-        }    
-    }
+        }
+    }        
+    
     
      that.get_point_from_points = function( tr_points, num ) {
         if ( typeof num !== 'number'){
@@ -475,6 +547,18 @@ var store = (function () {
             });
         }    
     }
+     
+    that.move_points = function( Tx, Ty, Tz ){
+        points.forEach(function( point ){
+            move_point( point, Tx, Ty, Tz );        
+        });                
+    }
+    
+    that.rotate_points = function( ax, angle ) {
+        points.forEach( function( point ){
+            rotate_point( point, ax, angle );
+        });
+    }
     
     that.get_transform_point = function ( num , z ){
         var point = jQuery.extend( true, {},  that.get_point( num ) );
@@ -484,15 +568,17 @@ var store = (function () {
     
     }
     
+    
+    //return points table with x, y transform for 2d draw
     that.tranform_points = function ( z ) {
         
         var tmp_points = jQuery.extend( true, [],  points );
         
         tmp_points.forEach( function ( point ) {
-            transform_point( point, z );
+            transform_point_to_2d( point, z );
         });
         all_points_normalization( tmp_points );
-        tmp_points = all_points_transform( tmp_points );
+        all_to_canvas_cordinates( tmp_points );
         
         return tmp_points;
     
@@ -651,18 +737,15 @@ var store = (function () {
         return points_table;
     }  
     
-    function all_points_transform( points_table ){
-        var transform_points = jQuery.extend( true, [],  points_table );
+    function all_to_canvas_cordinates( transform_points ){
         transform_points.forEach(function ( point ) {
-            point_transform(point);
-        })                
-        return transform_points;           
+            point_to_canvas_cordinates(point);
+        });                
     }
     
-     function point_transform( point ) {
+     function point_to_canvas_cordinates( point ) {
         point.cor.x = (point.cor.x * 1000 ) + 300;
         point.cor.y = - ( point.cor.y * 1000 ) + 300;
-        return point;    
     }
     
     function point_vector( point ){
@@ -675,14 +758,14 @@ var store = (function () {
     }
     
     function vector_to_point( table , point ){
-        point.cor.x = table[0];
-        point.cor.y = table[1];
-        point.cor.z = table[2];
-        point.cor.p = table[3];
+        point.cor.x = table[0][0];
+        point.cor.y = table[1][0];
+        point.cor.z = table[2][0];
+        point.cor.p = table[3][0];
         return point;
     }    
     
-    function transform_point( point, z ){
+    function transform_point_to_2d( point, z ){
         var  pnt_vector = point_vector( point );
         var Mpp = Matrix.perspective_matrix( z );
         Mpp.matrix_multiplication( pnt_vector ); 
@@ -690,12 +773,33 @@ var store = (function () {
         return point;        
     }
     
+    function move_point( point, Tx, Ty, Tz ){
+        var pnt_vector = point_vector( point );
+        var Mmov = Matrix.move_matrix( Tx, Ty, Tz );
+        Mmov.matrix_multiplication( pnt_vector );
+        point = vector_to_point( Mmov.value, point );
+        return point; 
+    }
+    
+    function  rotate_point( point, ax, angle ){
+        var pnt_vector = point_vector( point );
+        var Mrot;
+        if ( ax === 'X' ){
+            Mrot = Matrix.rotation_ox( angle );
+        }else if ( ax === 'Y' ){
+            Mrot = Matrix.rotation_oy( angle );
+        }else if ( ax === 'Z' ){
+            Mrot = Matrix.rotation_oz( angle );
+        }else{
+            return NaN;
+        }    
+        Mrot.matrix_multiplication( pnt_vector );
+        point = vector_to_point( Mrot.value, point );
+        return point; 
+    //TODO
+    }
+    
 // E N D  PRIVATE INTERFACE
-       
-  
-
-  
-  
   
 // OBJECT FACTORY
 
