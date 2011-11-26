@@ -1,6 +1,3 @@
-//TODO:
-// obliczenia na macierzach
-// generowanie rzutu z punktów na ekran
 
 var store = (function () {
     var that = {};
@@ -485,9 +482,13 @@ var store = (function () {
     
     var triangles = [
         { a: 5, b: 1, c: 2, colR: 0, colG: 0, colB: 255 }, //side walls
-        { a: 6, b: 2, c: 3, colR: 0, colG: 0, colB: 255 },
-        { a: 7, b: 3, c: 4, colR: 0, colG: 0, colB: 255 },
-        { a: 8, b: 4, c: 1, colR: 0, colG: 0, colB: 255 },          
+        { a: 5, b: 6, c: 2, colR: 0, colG: 0, colB: 255 },
+        { a: 6, b: 2, c: 3, colR: 0, colG: 50, colB: 0 },
+        { a: 6, b: 7, c: 3, colR: 0, colG: 50, colB: 0 },
+        { a: 7, b: 3, c: 4, colR: 50, colG: 0, colB: 150 },
+        { a: 7, b: 8, c: 4, colR: 50, colG: 0, colB: 150 },        
+        { a: 8, b: 4, c: 1, colR: 0, colG: 20, colB: 100 },          
+        { a: 8, b: 5, c: 1, colR: 0, colG: 20, colB: 100 },          
         { a: 1, b: 2, c: 3, colR: 0, colG: 255, colB: 0 }, //under square 
         { a: 1, b: 3, c: 4, colR: 0, colG: 255, colB: 0 },
         { a: 5, b: 6, c: 7, colR: 255, colG: 0, colB: 0 }, //top square
@@ -497,17 +498,18 @@ var store = (function () {
         { a: 7, b: 8, c: 9, colR: 255, colG: 0, colB: 0 }, 
         { a: 8, b: 5, c: 9, colR: 255, colG: 0, colB: 0 },
         
-        { a: 13, b: 14, c: 3 , colR: 0, colG: 255, colB: 0 }, //figure 2 side walls
-        { a: 14, b: 15, c: 10, colR: 0, colG: 255, colB: 0 },
-        { a: 16, b: 15, c: 11, colR: 0, colG: 255, colB: 0 },
-        { a: 13, b: 16, c: 12, colR: 0, colG: 255, colB: 0 },          
-        { a: 10, b: 12, c: 11, colR: 0, colG: 255, colB: 0 }, //figure 2 - top square
-        { a: 3 , b: 10, c: 12, colR: 0, colG: 255, colB: 0 },
-        { a: 13, b: 14, c: 16, colR: 0, colG: 255, colB: 0 }, //figure 2 - under square
-        { a: 14, b: 16, c: 15, colR: 0, colG: 255, colB: 0 },
-
-
- 
+        { a: 13, b: 14, c: 3 , colR: 219, colG:219 , colB: 112 }, //figure 2 side walls
+        { a: 10, b: 14, c: 3 , colR: 219, colG:219 , colB: 112 },        
+        { a: 14, b: 15, c: 10, colR: 100, colG:149 , colB: 237 },
+        { a: 11, b: 15, c: 10, colR: 100, colG:149 , colB: 237 },
+        { a: 16, b: 15, c: 11, colR: 255, colG: 69 , colB: 0  },
+        { a: 16, b: 12, c: 11, colR: 255, colG: 69 , colB: 0  },
+        { a: 13, b: 16, c: 12, colR: 255, colG: 20 , colB: 147 },          
+        { a: 13, b: 3 , c: 12, colR: 255, colG: 20 , colB: 147 },          
+        { a: 10, b: 12, c: 11, colR: 0  , colG: 255, colB: 0   }, //figure 2 - top square
+        { a: 3 , b: 10, c: 12, colR: 0  , colG: 255, colB: 0   },
+        { a: 13, b: 14, c: 16, colR: 50 , colG: 50 , colB: 80  }, //figure 2 - under square
+        { a: 14, b: 16, c: 15, colR: 50 , colG: 50 , colB: 80  },
     ];
 
     // E N D   3D O B J E C T  D E F I N I T I O N
@@ -518,6 +520,19 @@ var store = (function () {
     
 
 // PUBLIC INTERFACE
+
+    that.get_zindex_triangles = function(){
+        var z_triangles; 
+        z_triangles = triangles.map( function( triangle ){
+            triangle.z_index = generate_zindex( triangle );
+            return triangle;
+        });
+        triangles.sort( function ( a, b ) {
+            if ( a.z_index > b.z_index ) return 1;
+            if ( a.z_index <= b.z_index ) return -1;            
+        });
+        return z_triangles;
+    }
 
     that.get_figure = function(){
         return figure();
@@ -719,6 +734,19 @@ var store = (function () {
         return triangles;
     }
     
+    function generate_zindex( triangle ) {
+        
+        var pointA = that.get_point( triangle.a )[0];
+        var pointB = that.get_point( triangle.b )[0];
+        var pointC = that.get_point( triangle.c )[0];
+        
+        
+        var Za = pointA.cor.z;
+        var Zb = pointB.cor.z;
+        var Zc = pointC.cor.z;;
+        return ( Za + Zb + Zc )/ 3;
+    
+    }
     
     function point_normalization( point ) {
         if ( point.p !== 1 ){

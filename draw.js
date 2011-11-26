@@ -8,7 +8,7 @@ var draw = (function() {
 // PUBLIC INTERFACE
 
     that.start_draw = function() {
-        var triangles = store.get_triangles();
+        var triangles = store.get_zindex_triangles();
         var tr_points = store.tranform_points( z0 );
 
         var canvas = document.getElementById('picture');
@@ -16,6 +16,8 @@ var draw = (function() {
             var ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);                        
 
+            
+//            triangles.sort( wed³ug z indeksu  )
             triangles.forEach( function ( triangle ){
                 draw_triangle( triangle, tr_points, ctx );
             });             
@@ -154,15 +156,19 @@ var draw = (function() {
         var Cx = pointC.cor.x;
         var Cy = pointC.cor.y;
  
-        ctx.strokeStyle = "rgb( "+ trian.colR +", " + trian.colG + " , " + trian.colB +" )";
-            
+//        ctx.strokeStyle = "rgb( "+ trian.colR +", " + trian.colG + " , " + trian.colB +" )";
+        ctx.strokeStyle = "rgb( 0, 0, 0 )";
+
+        ctx.fillStyle = "rgb( "+ trian.colR +", " + trian.colG + " , " + trian.colB +" )";
         ctx.beginPath();
         ctx.moveTo( Ax, Ay );
         ctx.lineTo( Bx, By );
         ctx.lineTo( Cx, Cy );
         ctx.closePath();
         ctx.stroke();
-       //ctx.fillRect(150, 150, 150, 50);
+        ctx.fill();
+
+        //ctx.fillRect(150, 150, 150, 50);
         
     }
 // E N D   PRIVATE INTERFACE
@@ -174,6 +180,8 @@ var draw = (function() {
 }) ();
 
 window.onload = function () {
+    var triangles = store.get_zindex_triangles();
+    var tr_points = store.tranform_points( 2 );
     draw.prepare_interface();
     draw.start_draw();
 }
